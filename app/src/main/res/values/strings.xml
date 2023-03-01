@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">math-game-app</string>
+    <string name="rollButtonText">Roll Die</string>
+    <string name="die_value">die value</string>
+    <string name="guessButtonText">Guess</string>
+</resources>
