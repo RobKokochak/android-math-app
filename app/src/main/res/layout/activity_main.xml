@@ -35,13 +35,14 @@
         android:id="@+id/btnRollDie"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
         android:width="200dp"
         android:text="@string/rollButtonText"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvCurrentPlayer"
-        app:layout_constraintVertical_bias="0.04000002" />
+        app:layout_constraintTop_toBottomOf="@+id/tvQuestionValue"
+        app:layout_constraintVertical_bias="0.0" />
 
     <Button
         android:id="@+id/btnGuess"
@@ -90,7 +91,7 @@
         android:id="@+id/tvCurrentPlayer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         android:text="Current Player: 1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -100,9 +101,11 @@
         android:id="@+id/tvEquation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="="
+        android:textAlignment="textEnd"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/etGuess"
-        app:layout_constraintHorizontal_bias="0.84"
+        app:layout_constraintHorizontal_bias="0.97"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnRollDie"
         app:layout_constraintVertical_bias="0.120000005" />
@@ -120,5 +123,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnRollDie"
         app:layout_constraintVertical_bias="0.07999998" />
+
+    <TextView
+        android:id="@+id/tvQuestionValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Question Value: 0"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvCurrentPlayer" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

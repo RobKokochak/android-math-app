@@ -23,100 +23,125 @@ class MainActivity : AppCompatActivity() {
         var solution = 0
         var scoreVal = 0
         var diceValue = 0
+        var dieRolledFlag = 0
+        var questionValue = 0
 
         //set button event handler
         binding.btnRollDie.setOnClickListener {
-            binding.tvEquation.text = ""
+            if (dieRolledFlag == 0) { // die has not been rolled, give a new dice value & equation
 
-            diceValue = Random.nextInt(4, 7)
+                diceValue = Random.nextInt(1, 7)
 
-            var diceImageName = "@drawable/dice$diceValue"
+                val diceImageName = "@drawable/dice$diceValue"
 
-            var diceResourceID = resources.getIdentifier(diceImageName, "drawable", packageName)
+                val diceResourceID = resources.getIdentifier(diceImageName, "drawable", packageName)
 
-            binding.ivDie.setImageResource(diceResourceID)
+                binding.ivDie.setImageResource(diceResourceID)
 
-            when(diceValue) {
-                1 -> {
-                    scoreVal = 1
-                    val operand1 = Random.nextInt(0, 100)
-                    val operand2 = Random.nextInt(0, 100)
-                    solution = operand1 + operand2
-                    binding.tvEquation.text = "$operand1 + $operand2 = "
+                dieRolledFlag = 1
+
+                when(diceValue) {
+                    1 -> {
+                        scoreVal = 1
+                        val operand1 = Random.nextInt(0, 100)
+                        val operand2 = Random.nextInt(0, 100)
+                        solution = operand1 + operand2
+                        binding.tvEquation.text = "$operand1 + $operand2 = "
+                    }
+                    2 -> {
+                        scoreVal = 2
+                        val operand1 = Random.nextInt(0, 100)
+                        val operand2 = Random.nextInt(0, 100)
+                        solution = operand1 - operand2
+                        binding.tvEquation.text = "$operand1 - $operand2 = "
+                    }
+                    3 -> {
+                        scoreVal = 3
+                        val operand1 = Random.nextInt(0, 21)
+                        val operand2 = Random.nextInt(0, 21)
+                        solution = operand1 * operand2
+                        binding.tvEquation.text = "$operand1 * $operand2 = "
+                    }
+                    4 -> {
+                        scoreMultiplier *= 2
+                        binding.tvScoreMultiplier.text = "Score Multiplier: $scoreMultiplier"
+                        binding.tvEquation.text = "2x points! Roll Again"
+                        dieRolledFlag = 0
+                    }
+                    5 -> {
+                        currentPlayer = (currentPlayer + 1) % 2
+                        currentPlayerDisplay = currentPlayer + 1
+                        binding.tvCurrentPlayer.text = "Current Player: $currentPlayerDisplay"
+                        binding.tvEquation.text = "Bad Luck! Next Player's Turn"
+                        dieRolledFlag = 0
+                    }
+                    6 -> {
+                        scoreVal = jackpotValue
+                        val operand1 = Random.nextInt(0, 21)
+                        val operand2 = Random.nextInt(0, 21)
+                        solution = operand1 % operand2
+                        binding.tvEquation.text = "$operand1 % $operand2 = "
+                    }
                 }
-                2 -> {
-                    scoreVal = 2
-                    val operand1 = Random.nextInt(0, 100)
-                    val operand2 = Random.nextInt(0, 100)
-                    solution = operand1 - operand2
-                    binding.tvEquation.text = "$operand1 - $operand2 = "
-                }
-                3 -> {
-                    scoreVal = 3
-                    val operand1 = Random.nextInt(0, 21)
-                    val operand2 = Random.nextInt(0, 21)
-                    solution = operand1 * operand2
-                    binding.tvEquation.text = "$operand1 * $operand2 = "
-                }
-                4 -> {
-                    scoreMultiplier *= 2
-                    binding.tvScoreMultiplier.text = "Score Multiplier: $scoreMultiplier"
-                    binding.tvEquation.text = "2x points! Roll Again"
-                }
-                5 -> {
-                    currentPlayer = (currentPlayer + 1) % 2
-                    currentPlayerDisplay = currentPlayer + 1
-                    binding.tvCurrentPlayer.text = "Current Player: $currentPlayerDisplay"
-                    binding.tvEquation.text = "Bad Luck! Next Player's Turn"
-                }
-                6 -> {
-                    val operand1 = Random.nextInt(0, 21)
-                    val operand2 = Random.nextInt(0, 21)
-                    solution = operand1 % operand2
-                    binding.tvEquation.text = "$operand1 % $operand2 = "
-                }
+                questionValue = scoreVal * scoreMultiplier
+                binding.tvQuestionValue.text = "Question Value: $questionValue"
             }
         }//end setOnClickListener for btnRollDie
 
+
         binding.btnGuess.setOnClickListener {
-            val guess = Integer.parseInt(binding.etGuess.text.toString())
-            if (guess == solution) {
-                binding.tvEquation.text = "Correct!"
-                when (currentPlayer) {
-                    0 -> { // player 1
-                        if (diceValue == 6) {
-                            player1Score += jackpotValue * scoreMultiplier
-                            jackpotValue = 5
-                            binding.tvCurrentJackpot.text = "Current Jackpot: $jackpotValue"
+            if (binding.etGuess.text.toString() != "" && dieRolledFlag == 1) {
+                val guess = Integer.parseInt(binding.etGuess.text.toString())
+                if (guess == solution) {
+                    binding.tvEquation.text = "Correct!"
+                    when (currentPlayer) {
+                        0 -> { // player 1
+                            player1Score += questionValue
+                            if (diceValue == 6) {
+                                jackpotValue = 5
+                                binding.tvCurrentJackpot.text = "Current Jackpot: $jackpotValue"
+                            }
+                            binding.tvP1Score.text = "Player 1 Score: $player1Score"
                         }
-                        player1Score += scoreVal * scoreMultiplier
-                        binding.tvP1Score.text = "Player 1 Score: $player1Score"
-                    }
-                    1 -> { // player 2
-                        if (diceValue == 6) {
-                            player2Score += jackpotValue * scoreMultiplier
-                            jackpotValue = 5
-                            binding.tvCurrentJackpot.text = "Current Jackpot: $jackpotValue"
+                        1 -> { // player 2
+                            player2Score += questionValue
+                            if (diceValue == 6) {
+                                jackpotValue = 5
+                                binding.tvCurrentJackpot.text = "Current Jackpot: $jackpotValue"
+                            }
+                            binding.tvP2Score.text = "Player 2 Score: $player2Score"
                         }
-                        player2Score += scoreVal * scoreMultiplier
-                        binding.tvP2Score.text = "Player 2 Score: $player2Score"
                     }
+                } else { // player got it wrong
+                    binding.tvEquation.text = "Wrong - Correct Answer: $solution"
+                    jackpotValue += questionValue
+                    binding.tvCurrentJackpot.text = "Current Jackpot: $jackpotValue"
+                }
+
+                scoreVal = 0
+                scoreMultiplier = 1
+                currentPlayer = (currentPlayer + 1) % 2
+                currentPlayerDisplay = currentPlayer + 1
+                binding.tvCurrentPlayer.text = "Current Player: $currentPlayerDisplay"
+                binding.tvScoreMultiplier.text = "Score Multiplier: 1"
+                binding.etGuess.text.clear()
+                dieRolledFlag = 0
+                questionValue = 0
+                binding.tvQuestionValue.text = "Question Value: 0"
+
+                if (player1Score >= 20 || player2Score >= 20) {
+                    if (player1Score > player2Score) binding.tvEquation.text = "Player 1 wins! Start again"
+                    else binding.tvEquation.text = "Player 2 wins! Start again"
+                    player1Score = 0
+                    player2Score = 0
+                    jackpotValue = 5
+                    currentPlayer = 0
+                    binding.tvP1Score.text = "Player 1 Score: 0"
+                    binding.tvP2Score.text = "Player 2 Score: 0"
+                    binding.tvCurrentJackpot.text = "Current Jackpot: 5"
                 }
             }
-            else { // player got it wrong
-                binding.tvEquation.text = "Wrong - Correct Answer: $solution"
-                if (diceValue == 6) jackpotValue += jackpotValue * scoreMultiplier
-                else jackpotValue += scoreVal * scoreMultiplier
-                binding.tvCurrentJackpot.text = "Current Jackpot: $jackpotValue"
-            }
-            scoreVal = 0
-            scoreMultiplier = 1
-            currentPlayer = (currentPlayer + 1) % 2
-            currentPlayerDisplay = currentPlayer + 1
-            binding.tvCurrentPlayer.text = "Current Player: $currentPlayerDisplay"
-            binding.tvScoreMultiplier.text = "Score Multiplier: 1"
-            binding.etGuess.text.clear()
-        }
+        } //end setOnClickListener for btnGuess
 
     }//onCreate end
 }
